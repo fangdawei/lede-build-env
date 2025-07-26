@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get full-upgrade -y \
+    apt-get full-upgrade -y && \
     apt-get install -y sudo && \
     rm -rf /var/lib/apt/lists/*
 
