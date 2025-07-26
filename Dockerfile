@@ -3,6 +3,10 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
+RUN echo "msmtp msmtp/use_apparmor boolean true" | debconf-set-selections && \
+    echo "tzdata tzdata/Areas select Asia" | debconf-set-selections && \
+    echo "tzdata tzdata/Zones/Asia select Shanghai" | debconf-set-selections
+
 RUN apt-get update && \
     apt-get full-upgrade -y && \
     apt-get install -y sudo

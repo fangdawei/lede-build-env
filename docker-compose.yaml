@@ -7,4 +7,5 @@ services:
     volumes:
       - /vol1/1000/Projects/lede:/lede
     working_dir: /lede
+    tty: true
     restart: unless-stopped
