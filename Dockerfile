@@ -3,9 +3,20 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
-RUN echo "msmtp msmtp/use_apparmor boolean true" | debconf-set-selections && \
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \ 
+    echo "msmtp msmtp/use_apparmor boolean true" | debconf-set-selections && \
     echo "tzdata tzdata/Areas select Asia" | debconf-set-selections && \
     echo "tzdata tzdata/Zones/Asia select Shanghai" | debconf-set-selections
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates
+
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
+
+RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse" > /etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt-get update && \
     apt-get full-upgrade -y && \
