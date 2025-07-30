@@ -35,7 +35,9 @@ RUN echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER ${USER}
 WORKDIR /home/${USER}
 
-RUN sudo apt-get install -y zsh curl git
+RUN sudo apt-get install -y zsh curl git iputils-ping
+
+
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
@@ -43,9 +45,7 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/
 
 RUN sed -i 's/^plugins=.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
 
-RUN sudo apt install -y tzdata
-
-RUN sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+RUN sudo apt install -y tzdata ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
 bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext \
 genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev \
 libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev \
