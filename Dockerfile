@@ -37,7 +37,8 @@ WORKDIR /home/${USER}
 
 RUN sudo apt-get install -y zsh curl git iputils-ping
 
-
+RUN git config --global user.name "fangdawei" && \
+    git config --global user.email "fangdawei.www@gmail.com"
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
