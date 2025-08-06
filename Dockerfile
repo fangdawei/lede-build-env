@@ -1,13 +1,5 @@
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Asia/Shanghai
-
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \ 
-    echo "msmtp msmtp/use_apparmor boolean true" | debconf-set-selections && \
-    echo "tzdata tzdata/Areas select Asia" | debconf-set-selections && \
-    echo "tzdata tzdata/Zones/Asia select Shanghai" | debconf-set-selections
-
 RUN apt-get update && \
     apt-get install -y ca-certificates
 
@@ -19,14 +11,12 @@ RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted
     echo "deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt-get update && \
-    apt-get full-upgrade -y && \
-    apt-get install -y sudo
+    apt-get install -y sudo zsh curl git iputils-ping
 
 ENV USER="david"
 ENV PASSWD="david"
 
-RUN useradd -m ${USER} && \
-    echo "${USER}:${PASSWD}" | chpasswd
+RUN useradd -m ${USER} && echo "${USER}:${PASSWD}" | chpasswd
 
 RUN usermod -aG sudo ${USER}
 
@@ -35,16 +25,27 @@ RUN echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER ${USER}
 WORKDIR /home/${USER}
 
-RUN sudo apt-get install -y zsh curl git iputils-ping
+ENV GIT_USER="fangdawei"
+ENV GIT_EMAIL="fangdawei.www@gmail.com"
 
-RUN git config --global user.name "fangdawei" && \
-    git config --global user.email "fangdawei.www@gmail.com"
+RUN git config --global user.name ${GIT_USER} && \
+    git config --global user.email ${GIT_EMAIL}
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
 RUN sed -i 's/^plugins=.*/plugins=(git zsh-autosuggestions)/' ~/.zshrc
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+
+RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections && \ 
+    echo "msmtp msmtp/use_apparmor boolean true" | sudo debconf-set-selections && \
+    echo "tzdata tzdata/Areas select Asia" | sudo debconf-set-selections && \
+    echo "tzdata tzdata/Zones/Asia select Shanghai" | sudo debconf-set-selections
+
+RUN sudo apt update -y && sudo apt full-upgrade -y
 
 RUN sudo apt install -y tzdata ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
 bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext \
